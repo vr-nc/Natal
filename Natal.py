@@ -14,11 +14,64 @@ st.set_page_config(
     layout="centered"
 )
 
-# Estilos natalinos
+# ❄️ NEVE (funciona em PC e celular)
 st.markdown("""
 <style>
-.stApp { 
-    background: linear-gradient(180deg, #fff5f5, #ffeceb, #fff5f5);
+
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 1em;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+@keyframes fall {
+    0% { top: -10px; opacity: 1; }
+    100% { top: 110vh; opacity: 0; }
+}
+
+</style>
+
+<div id="snow-container"></div>
+
+<script>
+const snowContainer = document.getElementById('snow-container');
+for (let i = 0; i < 45; i++) {
+    let snow = document.createElement('div');
+    snow.className = 'snowflake';
+    snow.innerHTML = '❄';
+    snow.style.left = Math.random() * 100 + 'vw';
+    snow.style.fontSize = (12 + Math.random() * 18) + 'px';
+    snow.style.animationDuration = (6 + Math.random() * 6) + 's';
+    snow.style.animationDelay = Math.random() * 5 + 's';
+    snow.style.opacity = (0.3 + Math.random() * 0.7);
+    snowContainer.appendChild(snow);
+}
+</script>
+""", unsafe_allow_html=True)
+
+# 🎄 Estilos natalinos + correção de cor no celular
+st.markdown("""
+<style>
+
+.stApp {
+    background: #fff5f5 !important;
+    background-image: radial-gradient(circle at top, #ffe5e5, #fff5f5 70%) !important;
+    background-attachment: fixed !important;
+}
+
+/* Corrige fundo no celular */
+@media (max-width: 600px) {
+    .stApp {
+        background: #fff5f5 !important;
+        background-image: radial-gradient(circle at top, #ffe5e5, #fff5f5 85%) !important;
+        background-size: cover !important;
+    }
 }
 
 .title {
@@ -48,6 +101,7 @@ st.markdown("""
     border-radius: 12px;
     text-align: center;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,7 +185,10 @@ if senha == SENHA_ADMIN:
     st.success("Acesso liberado! 🎅")
 
     if not df.empty:
-        total_confirmados = df[df["confirmacao"] == "Sim"]["adultos"].sum() + df[df["confirmacao"] == "Sim"]["criancas"].sum()
+        total_confirmados = (
+            df[df["confirmacao"] == "Sim"]["adultos"].sum() +
+            df[df["confirmacao"] == "Sim"]["criancas"].sum()
+        )
         count_sim = df[df["confirmacao"] == "Sim"].shape[0]
         count_nao = df[df["confirmacao"] == "Não"].shape[0]
         count_talvez = df[df["confirmacao"] == "Talvez"].shape[0]
@@ -157,4 +214,5 @@ else:
 
 st.markdown("---")
 st.caption("🎄 Feito com carinho para reunir a família — Feliz Natal! ✨")
+
 # python -m streamlit run Natal.py
